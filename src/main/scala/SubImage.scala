@@ -8,7 +8,13 @@ import scala.reflect.ClassTag
   * Useful functions to find elements inside an image.
   */
 case class SubImage(file: String) {
-  private lazy val img = ImageIO.read(new File(file))
+  private lazy val img = try {
+    ImageIO.read(new File(file))
+  } catch {
+    case ex: Throwable =>
+      println(ex.getMessage + s"\nProblems reading image file '$file'.")
+      sys.exit(0)
+  }
   lazy val (w, h) = img.getWidth -> img.getHeight
   lazy val (r, g, b, alpha, color) = {
     val (r, g, b, a, co) = (alocate(0), alocate(0), alocate(0), alocate(0), alocate(0))
